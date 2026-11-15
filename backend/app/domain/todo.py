@@ -4,5 +4,5 @@ class Todo(BaseModel):
     id: int
     title: str
     completed: bool = False
+    description: str | None = None
     favorite: bool = False
-    completedTogether: bool = False

@@ -3,7 +3,8 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+
+from app.domain.todo import Todo
 
 DATA_FILE = Path(__file__).parent / "todos.json"
 
@@ -16,12 +17,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-class Todo(BaseModel):
-    title: str
-    completed: bool = False
-
 
 def load_todos() -> list[Todo]:
     """Load todos from the JSON file."""
