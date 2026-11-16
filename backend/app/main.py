@@ -1,14 +1,27 @@
-import json
+from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
-from app.domain.todo import Todo
+from app.repositories.todoJsonRepository import JsonTodoRepository
+from app.repositories.todoRepository import TodoNotFoundError, TodoRepository
+from app.routers import todoRouter
 
 DATA_FILE = Path(__file__).parent / "todos.json"
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Build the dependencies once at startup and register them by interface."""
+    todo_repository = JsonTodoRepository(DATA_FILE)
+    todo_repository.load()
+    app.state.container = {TodoRepository: todo_repository}
+    yield
+
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -18,38 +31,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def load_todos() -> list[Todo]:
-    """Load todos from the JSON file."""
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return [Todo(**todo) for todo in json.load(f)]
 
+@app.exception_handler(TodoNotFoundError)
+async def todo_not_found_handler(request: Request, exc: TodoNotFoundError) -> JSONResponse:
+    return JSONResponse(status_code=404, content={"detail": str(exc)})
 
-def save_todos(todos: list[Todo]):
-    """
-    Save todos to the JSON file.
-
-    Args:
-        todos (list[Todo]): List of Todo objects to save.
-    """
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump([todo.model_dump() for todo in todos], f, indent=2)
-
-
-@app.get("/todos", response_model=list[Todo])
-def get_todos():
-    """Get all todos."""
-    return load_todos()
-
-
-@app.post("/todos", response_model=Todo)
-def add_todo(todo: Todo):
-    """
-    Add a new todo.
-
-    Args:
-        todo (Todo): The todo to add.
-    """
-    todos = load_todos()
-    todos.append(todo)
-    save_todos(todos)
-    return todo
+app.include_router(todoRouter.router)
