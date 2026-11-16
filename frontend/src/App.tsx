@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Todo } from "./types/todo";
 import { getTodos, createTodo, updateTodo, deleteTodo } from "./api/todo";
 
@@ -7,15 +7,25 @@ function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [title, setTitle] = useState("");
 
-  const loadTodos = () => {
-    getTodos().then((data) => {
-      setTodos(data);
-    });
-  };
+  const loadTodos = useCallback(() => {
+    getTodos()
+      .then(setTodos)
+      .catch((error) => console.error(error));
+  }, []);
+
+  useEffect(() => {
+    loadTodos();
+  }, [loadTodos]);
 
   const addTodo = () => {
     if (!title.trim()) return;
+
     createTodo(title)
+      .then(() => {
+        setTitle("");
+        loadTodos();
+      })
+      .catch((error) => console.error(error));
   };
 
   const toggleTodo = (id: number) => {
@@ -23,17 +33,13 @@ function App() {
     if (!todo) return;
 
     updateTodo(id, { completed: !todo.completed })
-      .then((updated) => {
-        setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
-      })
+      .then(loadTodos)
       .catch((error) => console.error(error));
   };
 
   const removeTodo = (id: number) => {
     deleteTodo(id)
-      .then(() => {
-        setTodos((prev) => prev.filter((t) => t.id !== id));
-      })
+      .then(loadTodos)
       .catch((error) => console.error(error));
   };
 
