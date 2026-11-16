@@ -1,12 +1,12 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 
+from app.error_handler import register_exception_handlers
 from app.repositories.todoJsonRepository import JsonTodoRepository
-from app.repositories.todoRepository import TodoNotFoundError, TodoRepository
+from app.repositories.todoRepository import TodoRepository
 from app.routers import todoRouter
 
 DATA_FILE = Path(__file__).parent / "todos.json"
@@ -30,10 +30,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.exception_handler(TodoNotFoundError)
-async def todo_not_found_handler(request: Request, exc: TodoNotFoundError) -> JSONResponse:
-    return JSONResponse(status_code=404, content={"detail": str(exc)})
-
+register_exception_handlers(app)
 app.include_router(todoRouter.router)

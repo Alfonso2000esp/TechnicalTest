@@ -21,7 +21,3 @@ class TodoRepository(ABC):
 
     @abstractmethod
     def delete(self, todo_id: int) -> None: ...
-
-class TodoNotFoundError(Exception):
-    def __init__(self, todo_id: int):
-        super().__init__(f"Todo {todo_id} not found")

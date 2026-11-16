@@ -2,10 +2,11 @@ import threading
 import json
 from pathlib import Path
 
+from app.domain.errors import TodoNotFoundError
 from app.domain.todo import Todo
 from app.domain.todoCreate import TodoCreate
 from app.domain.todoUpdate import TodoUpdate
-from app.repositories.todoRepository import TodoRepository, TodoNotFoundError
+from app.repositories.todoRepository import TodoRepository
 
 
 class JsonTodoRepository(TodoRepository):
