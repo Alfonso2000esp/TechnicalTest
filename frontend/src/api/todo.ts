@@ -1,4 +1,4 @@
-import type { Todo } from "../types/todo";
+import type { Todo, TodoUpdate } from "../types/todo";
 
 const BASE_URL = "http://localhost:8000/todos";
 
@@ -18,17 +18,17 @@ export const createTodo = async (title: string): Promise<void> => {
   });
 };
 
-export const toggleTodoStatus = async (
+export const updateTodo = async (
   id: number,
-  currentStatus: boolean
+  changes: TodoUpdate
 ): Promise<Todo> => {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ completed: !currentStatus }),
+    body: JSON.stringify(changes),
   });
-  if (!res.ok) throw new Error("Error toggling todo status");
+  if (!res.ok) throw new Error(`Error updating todo ${id}`);
   return res.json();
 };

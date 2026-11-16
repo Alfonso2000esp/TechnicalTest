@@ -1,7 +1,7 @@
 // src/App.tsx
 import { useState } from "react";
 import type { Todo } from "./types/todo";
-import { getTodos, createTodo, toggleTodoStatus } from "./api/todo";
+import { getTodos, createTodo, updateTodo } from "./api/todo";
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -22,9 +22,11 @@ function App() {
     const todo = todos.find((t) => t.id === id);
     if (!todo) return;
 
-    toggleTodoStatus(id, todo.completed).then((updated) => {
-      setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
-    });
+    updateTodo(id, { completed: !todo.completed })
+      .then((updated) => {
+        setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
+      })
+      .catch((error) => console.error(error));
   };
 
   return (
