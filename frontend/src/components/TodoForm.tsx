@@ -1,30 +1,33 @@
-// src/components/TodoForm.tsx
-import React from "react";
+import { useState, type FormEvent } from "react";
 
 interface TodoFormProps {
-  title: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  addTodo: () => void;
+  onAdd: (title: string) => Promise<boolean>;
 }
 
-const TodoForm: React.FC<TodoFormProps> = ({ title, setTitle, addTodo }) => {
+export function TodoForm({ onAdd }: TodoFormProps) {
+  const [title, setTitle] = useState("");
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!title.trim()) return;
+
+    if (await onAdd(title)) setTitle("");
+  };
+
   return (
-    <div className="flex gap-2 mb-8">
+    <form onSubmit={handleSubmit} className="flex flex-1 gap-2">
       <input
-        type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Add a new task..."
         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
       <button
-        onClick={addTodo}
+        type="submit"
         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition cursor-pointer"
       >
         Add
       </button>
-    </div>
+    </form>
   );
-};
-
-export default TodoForm;
+}
