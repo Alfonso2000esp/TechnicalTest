@@ -1,7 +1,7 @@
 // src/App.tsx
 import { useState } from "react";
 import type { Todo } from "./types/todo";
-import { getTodos, createTodo, updateTodo } from "./api/todo";
+import { getTodos, createTodo, updateTodo, deleteTodo } from "./api/todo";
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -25,6 +25,14 @@ function App() {
     updateTodo(id, { completed: !todo.completed })
       .then((updated) => {
         setTodos((prev) => prev.map((t) => (t.id === id ? updated : t)));
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const removeTodo = (id: number) => {
+    deleteTodo(id)
+      .then(() => {
+        setTodos((prev) => prev.filter((t) => t.id !== id));
       })
       .catch((error) => console.error(error));
   };
@@ -59,9 +67,7 @@ function App() {
           {todos.map((todo) => (
             <li
               key={todo.id}
-              className={`flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200 ${
-                todo.completed ? "line-through text-gray-400" : ""
-              }`}
+              className="flex items-center gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200"
             >
               <input
                 type="checkbox"
@@ -69,7 +75,33 @@ function App() {
                 onChange={() => toggleTodo(todo.id)}
                 className="cursor-pointer"
               />
-              <span>{todo.title}</span>
+              <span className={`flex-1 ${todo.completed ? "line-through text-gray-400" : ""}`}>
+                {todo.title}
+              </span>
+              <button
+                onClick={() => removeTodo(todo.id)}
+                aria-label={`Delete "${todo.title}"`}
+                title="Delete"
+                className="p-2 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-700 hover:border-red-300 focus:outline-none focus:ring-2 focus:ring-red-400 transition cursor-pointer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                >
+                  <path d="M3 6h18" />
+                  <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                  <path d="M10 11v6" />
+                  <path d="M14 11v6" />
+                </svg>
+              </button>
             </li>
           ))}
         </ul>
