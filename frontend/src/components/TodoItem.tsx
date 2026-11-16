@@ -16,9 +16,14 @@ export function TodoItem({ todo, onToggleCompleted, onDelete }: TodoItemProps) {
         onChange={() => onToggleCompleted(todo)}
         className="cursor-pointer"
       />
-      <span className={`flex-1 ${todo.completed ? "line-through text-gray-400" : ""}`}>
-        {todo.title}
-      </span>
+      <div className="flex-1 min-w-0">
+        <span className={todo.completed ? "line-through text-gray-400" : ""}>{todo.title}</span>
+        {todo.description && (
+          <p className="text-sm text-gray-500 whitespace-pre-line break-words">
+            {todo.description}
+          </p>
+        )}
+      </div>
       <button
         onClick={() => onDelete(todo.id)}
         aria-label={`Delete "${todo.title}"`}

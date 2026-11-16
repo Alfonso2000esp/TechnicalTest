@@ -10,7 +10,7 @@ function App() {
       <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-2xl">
         <h1 className="text-2xl font-bold mb-4 text-gray-800">ToDo List</h1>
 
-        <div className="flex gap-2 mb-8">
+        <div className="flex items-start gap-2 mb-8">
           <TodoForm onAdd={add} />
           <button
             onClick={reload}

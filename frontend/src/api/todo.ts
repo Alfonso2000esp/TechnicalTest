@@ -1,4 +1,4 @@
-import type { Todo, TodoUpdate } from "../types/todo";
+import type { NewTodo, Todo, TodoUpdate } from "../types/todo";
 
 const BASE_URL = "http://localhost:8000/todos";
 
@@ -8,13 +8,13 @@ export const getTodos = async (): Promise<Todo[]> => {
   return res.json();
 };
 
-export const createTodo = async (title: string): Promise<Todo> => {
+export const createTodo = async (todo: NewTodo): Promise<Todo> => {
   const res = await fetch(BASE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title, completed: false }),
+    body: JSON.stringify({ ...todo, completed: false }),
   });
   if (!res.ok) throw new Error("Error creating todo");
   return res.json();

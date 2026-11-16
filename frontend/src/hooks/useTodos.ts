@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { createTodo, deleteTodo, getTodos, updateTodo } from "../api/todo";
-import type { Todo } from "../types/todo";
+import type { NewTodo, Todo } from "../types/todo";
 
 /**
  * State and actions for the todo list.
@@ -38,7 +38,7 @@ export function useTodos() {
     [reload]
   );
 
-  const add = (title: string) => mutate(() => createTodo(title));
+  const add = (todo: NewTodo) => mutate(() => createTodo(todo));
 
   const toggleCompleted = (todo: Todo) =>
     mutate(() => updateTodo(todo.id, { completed: !todo.completed }));

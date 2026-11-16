@@ -6,5 +6,8 @@ export interface Todo {
   favorite: boolean
 }
 
+/** Fields the user provides when creating a todo. */
+export type NewTodo = Pick<Todo, "title" | "description">
+
 /** Fields accepted by PATCH /todos/{id}: only the ones sent are changed. */
 export type TodoUpdate = Partial<Omit<Todo, "id">>
