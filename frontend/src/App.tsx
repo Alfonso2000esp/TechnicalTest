@@ -1,10 +1,21 @@
+import { ErrorAlert } from "./components/ErrorAlert";
 import { TodoForm } from "./components/TodoForm";
 import { TodoList } from "./components/TodoList";
 import { TodoSection } from "./components/TodoSection";
 import { useTodos } from "./hooks/useTodos";
 
 function App() {
-  const { todos, reload, add, toggleCompleted, toggleFavorite, remove } = useTodos();
+  const {
+    todos,
+    loading,
+    error,
+    dismissError,
+    reload,
+    add,
+    toggleCompleted,
+    toggleFavorite,
+    remove,
+  } = useTodos();
 
   const favorites = todos.filter((todo) => todo.favorite);
 
@@ -29,13 +40,23 @@ function App() {
           </button>
         </div>
 
-        <TodoSection title="Favorites">
-          <TodoList todos={favorites} emptyMessage="No favorite tasks yet" {...actions} />
-        </TodoSection>
+        {error && <ErrorAlert message={error} onDismiss={dismissError} />}
 
-        <TodoSection title="All tasks">
-          <TodoList todos={todos} emptyMessage="No tasks yet" {...actions} />
-        </TodoSection>
+        {loading ? (
+          <p role="status" className="text-sm text-gray-500">
+            Loading tasks…
+          </p>
+        ) : (
+          <>
+            <TodoSection title="Favorites">
+              <TodoList todos={favorites} emptyMessage="No favorite tasks yet" {...actions} />
+            </TodoSection>
+
+            <TodoSection title="All tasks">
+              <TodoList todos={todos} emptyMessage="No tasks yet" {...actions} />
+            </TodoSection>
+          </>
+        )}
       </div>
     </div>
   );
