@@ -4,8 +4,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.repositories.todoJsonRepository import JsonTodoRepository
-from app.routers.todoRouter import get_todo_repository
+from app.repositories.todo_json_repository import JsonTodoRepository
+from app.routers.todo_router import get_todo_repository
 from tests.mothers import TodoMother
 
 SEED = [

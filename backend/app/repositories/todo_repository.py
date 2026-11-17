@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
 from app.domain.todo import Todo
-from app.domain.todoCreate import TodoCreate
-from app.domain.todoUpdate import TodoUpdate
+from app.domain.todo_create import TodoCreate
+from app.domain.todo_update import TodoUpdate
 
 
 class TodoRepository(ABC):

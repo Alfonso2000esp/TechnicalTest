@@ -6,9 +6,9 @@ from pathlib import Path
 
 from app.domain.errors import TodoNotFoundError
 from app.domain.todo import Todo
-from app.domain.todoCreate import TodoCreate
-from app.domain.todoUpdate import TodoUpdate
-from app.repositories.todoRepository import TodoRepository
+from app.domain.todo_create import TodoCreate
+from app.domain.todo_update import TodoUpdate
+from app.repositories.todo_repository import TodoRepository
 
 
 class JsonTodoRepository(TodoRepository):

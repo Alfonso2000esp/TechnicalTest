@@ -6,9 +6,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.error_handler import register_exception_handlers
-from app.repositories.todoJsonRepository import JsonTodoRepository
-from app.repositories.todoRepository import TodoRepository
-from app.routers import todoRouter
+from app.repositories.todo_json_repository import JsonTodoRepository
+from app.repositories.todo_repository import TodoRepository
+from app.routers import todo_router
 
 DATA_FILE = Path(os.environ.get("TODOS_DATA_FILE", Path(__file__).parent / "todos.json"))
 CORS_ORIGINS = [
@@ -37,4 +37,4 @@ app.add_middleware(
     allow_headers=["Content-Type"],
 )
 register_exception_handlers(app)
-app.include_router(todoRouter.router)
+app.include_router(todo_router.router)

@@ -1,9 +1,9 @@
 import pytest
 
 from app.domain.errors import TodoNotFoundError
-from app.domain.todoCreate import TodoCreate
-from app.domain.todoUpdate import TodoUpdate
-from app.repositories.todoJsonRepository import JsonTodoRepository
+from app.domain.todo_create import TodoCreate
+from app.domain.todo_update import TodoUpdate
+from app.repositories.todo_json_repository import JsonTodoRepository
 from tests.conftest import SEED
 from tests.mothers import TodoMother, TodoPayloadMother
 
@@ -71,7 +71,7 @@ def test_failed_write_leaves_file_and_memory_unchanged(repository, data_file, mo
     def crash(*args, **kwargs):
         raise OSError("disk full")
 
-    monkeypatch.setattr("app.repositories.todoJsonRepository.os.replace", crash)
+    monkeypatch.setattr("app.repositories.todo_json_repository.os.replace", crash)
 
     with pytest.raises(OSError):
         repository.create(TodoCreate(**TodoPayloadMother.create("Lost")))
