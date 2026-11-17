@@ -3,7 +3,7 @@ import { TodoList } from "./components/TodoList";
 import { useTodos } from "./hooks/useTodos";
 
 function App() {
-  const { todos, reload, add, toggleCompleted, remove } = useTodos();
+  const { todos, reload, add, toggleCompleted, toggleFavorite, remove } = useTodos();
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -20,7 +20,12 @@ function App() {
           </button>
         </div>
 
-        <TodoList todos={todos} onToggleCompleted={toggleCompleted} onDelete={remove} />
+        <TodoList
+          todos={todos}
+          onToggleCompleted={toggleCompleted}
+          onToggleFavorite={toggleFavorite}
+          onDelete={remove}
+        />
       </div>
     </div>
   );

@@ -43,7 +43,10 @@ export function useTodos() {
   const toggleCompleted = (todo: Todo) =>
     mutate(() => updateTodo(todo.id, { completed: !todo.completed }));
 
+  const toggleFavorite = (todo: Todo) =>
+    mutate(() => updateTodo(todo.id, { favorite: !todo.favorite }));
+
   const remove = (id: number) => mutate(() => deleteTodo(id));
 
-  return { todos, reload, add, toggleCompleted, remove };
+  return { todos, reload, add, toggleCompleted, toggleFavorite, remove };
 }
