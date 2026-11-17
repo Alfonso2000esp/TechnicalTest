@@ -1,9 +1,18 @@
 import { TodoForm } from "./components/TodoForm";
 import { TodoList } from "./components/TodoList";
+import { TodoSection } from "./components/TodoSection";
 import { useTodos } from "./hooks/useTodos";
 
 function App() {
   const { todos, reload, add, toggleCompleted, toggleFavorite, remove } = useTodos();
+
+  const favorites = todos.filter((todo) => todo.favorite);
+
+  const actions = {
+    onToggleCompleted: toggleCompleted,
+    onToggleFavorite: toggleFavorite,
+    onDelete: remove,
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
@@ -20,12 +29,13 @@ function App() {
           </button>
         </div>
 
-        <TodoList
-          todos={todos}
-          onToggleCompleted={toggleCompleted}
-          onToggleFavorite={toggleFavorite}
-          onDelete={remove}
-        />
+        <TodoSection title="Favorites">
+          <TodoList todos={favorites} emptyMessage="No favorite tasks yet" {...actions} />
+        </TodoSection>
+
+        <TodoSection title="All tasks">
+          <TodoList todos={todos} emptyMessage="No tasks yet" {...actions} />
+        </TodoSection>
       </div>
     </div>
   );
