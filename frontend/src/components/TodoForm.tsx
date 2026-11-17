@@ -3,8 +3,9 @@ import type { NewTodo } from "../types/todo";
 
 const TITLE_MAX_LENGTH = 200;
 
+const nullIfBlank = (value: string) => value.trim() || null;
+
 interface TodoFormProps {
-  /** Resolves to true if the todo was created, so the fields are only cleared on success. */
   onAdd: (todo: NewTodo) => Promise<boolean>;
 }
 
@@ -18,10 +19,9 @@ export function TodoForm({ onAdd }: TodoFormProps) {
     event.preventDefault();
     if (isTitleBlank) return;
 
-    // An empty description is stored as null, not as an empty string.
     const created = await onAdd({
       title: title.trim(),
-      description: description.trim() || null,
+      description: nullIfBlank(description),
     });
 
     if (created) {

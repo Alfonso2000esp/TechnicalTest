@@ -18,7 +18,6 @@ def _status_for(exc: DomainError) -> int:
 
 
 def responses_for(*errors: type[DomainError]) -> dict[int | str, dict[str, Any]]:
-    """OpenAPI `responses` for the errors an endpoint can raise."""
     return {ERROR_RESPONSES[e][0]: {"description": ERROR_RESPONSES[e][1]} for e in errors}
 
 

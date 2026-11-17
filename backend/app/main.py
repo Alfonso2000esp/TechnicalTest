@@ -21,7 +21,6 @@ CORS_ORIGINS = [
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Build the dependencies once at startup and register them by interface."""
     todo_repository = JsonTodoRepository(DATA_FILE)
     todo_repository.load()
     app.state.container = {TodoRepository: todo_repository}

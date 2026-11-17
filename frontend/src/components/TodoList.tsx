@@ -3,7 +3,6 @@ import { TodoItem } from "./TodoItem";
 
 interface TodoListProps {
   todos: Todo[];
-  /** Shown instead of the list when there are no todos. */
   emptyMessage: string;
   onToggleCompleted: (todo: Todo) => void;
   onToggleFavorite: (todo: Todo) => void;

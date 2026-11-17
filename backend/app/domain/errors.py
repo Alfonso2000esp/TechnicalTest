@@ -1,5 +1,5 @@
 class DomainError(Exception):
-    """Base class for errors raised by the domain / repositories."""
+    pass
 
 
 class TodoNotFoundError(DomainError):

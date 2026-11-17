@@ -12,14 +12,6 @@ from app.repositories.todoRepository import TodoRepository
 
 
 class JsonTodoRepository(TodoRepository):
-    """
-    In-memory store loaded once at startup, persisted to JSON on every write.
-
-    Every write builds the new state, persists it atomically and only then
-    replaces the in-memory state, so memory and file never diverge if the
-    write fails.
-    """
-
     def __init__(self, path: Path):
         self._path = path
         self._lock = threading.Lock()
