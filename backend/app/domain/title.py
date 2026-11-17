@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from pydantic import StringConstraints
+
 TITLE_MAX_LENGTH = 200
 
 

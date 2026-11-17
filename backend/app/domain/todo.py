@@ -1,5 +1,5 @@
-
 from pydantic import BaseModel
+
 from app.domain.title import Title
 
 

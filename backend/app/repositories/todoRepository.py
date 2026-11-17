@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 
 from app.domain.todo import Todo
 from app.domain.todoCreate import TodoCreate
@@ -6,7 +6,6 @@ from app.domain.todoUpdate import TodoUpdate
 
 
 class TodoRepository(ABC):
-
     @abstractmethod
     def get_all(self) -> list[Todo]: ...
 

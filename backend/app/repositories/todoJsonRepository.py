@@ -28,7 +28,7 @@ class JsonTodoRepository(TodoRepository):
         try:
             return self._todos[todo_id]
         except KeyError:
-            raise TodoNotFoundError(todo_id)
+            raise TodoNotFoundError(todo_id) from None
 
     def create(self, data: TodoCreate) -> Todo:
         with self._lock:

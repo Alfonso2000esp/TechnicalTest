@@ -19,13 +19,13 @@ CORS_ORIGINS = [
     if origin.strip()
 ]
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     todo_repository = JsonTodoRepository(DATA_FILE)
     todo_repository.load()
     app.state.container = {TodoRepository: todo_repository}
     yield
-
 
 
 app = FastAPI(lifespan=lifespan)

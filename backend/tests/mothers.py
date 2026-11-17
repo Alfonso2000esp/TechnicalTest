@@ -1,9 +1,7 @@
-
 from typing import Any
 
 
 class TodoMother:
-
     @staticmethod
     def pending(id: int = 1, **overrides: Any) -> dict[str, Any]:
         return {
@@ -25,7 +23,6 @@ class TodoMother:
 
 
 class TodoPayloadMother:
-
     @staticmethod
     def create(title: str = "New todo", description: str | None = None) -> dict[str, Any]:
         return {"title": title, "description": description, "completed": False}

@@ -8,7 +8,6 @@ NON_NULLABLE_FIELDS = ("title", "completed", "favorite")
 
 
 class TodoUpdate(BaseModel):
-
     title: Title | None = None
     description: str | None = None
     completed: bool | None = None
