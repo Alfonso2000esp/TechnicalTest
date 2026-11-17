@@ -63,3 +63,26 @@ def test_writes_are_persisted_to_file(repository, data_file):
         {**SEED[0], "favorite": True},
         TodoMother.pending(3, title="Persisted", description=None),
     ]
+
+
+def test_failed_write_leaves_file_and_memory_unchanged(repository, data_file, monkeypatch):
+    original_file = data_file.read_text(encoding="utf-8")
+
+    def crash(*args, **kwargs):
+        raise OSError("disk full")
+
+    monkeypatch.setattr("app.repositories.todoJsonRepository.os.replace", crash)
+
+    with pytest.raises(OSError):
+        repository.create(TodoCreate(**TodoPayloadMother.create("Lost")))
+
+    assert data_file.read_text(encoding="utf-8") == original_file
+    assert [t.model_dump() for t in repository.get_all()] == SEED
+
+
+def test_writes_leave_no_temporary_files(repository, data_file):
+    repository.create(TodoCreate(**TodoPayloadMother.create("New")))
+    repository.update(1, TodoUpdate(favorite=True))
+    repository.delete(2)
+
+    assert [p.name for p in data_file.parent.iterdir()] == [data_file.name]
