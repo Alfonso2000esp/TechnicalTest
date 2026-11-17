@@ -10,7 +10,7 @@ from app.repositories.todoJsonRepository import JsonTodoRepository
 from app.repositories.todoRepository import TodoRepository
 from app.routers import todoRouter
 
-DATA_FILE = Path(__file__).parent / "todos.json"
+DATA_FILE = Path(os.environ.get("TODOS_DATA_FILE", Path(__file__).parent / "todos.json"))
 CORS_ORIGINS = [
     origin.strip()
     for origin in os.environ.get(
