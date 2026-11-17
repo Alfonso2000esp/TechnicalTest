@@ -67,7 +67,8 @@ GitHub Actions runs the same checks on every push and pull request, and builds t
 3. **Auto-load:** the list is fetched on page load and again after every create, delete or update.
 4. **Descriptions and favorites:** optional description on creation, star toggle, and a "Favorites" section above "All tasks".
 
-Also: validation (non-blank title, no `null` for required fields in `PATCH`), visible loading and error states,
+Also: validation (non-blank title up to 200 characters, description up to 1000 with blank stored as `null`,
+no `null` for required fields in `PATCH`), visible loading and error states,
 restricted CORS, atomic file writes, Docker setup and CI.
 
 ## Design decisions
@@ -84,4 +85,5 @@ restricted CORS, atomic file writes, Docker setup and CI.
 
 - Single process only: state is in memory and in one file, so the backend cannot be scaled horizontally (in Kubernetes it would need `replicas: 1`). A database would be the next step.
 - The whole JSON file is rewritten on every change; fine for this size, not for large data sets.
+- New ids are `max(id) + 1`, so deleting the newest todo lets its id be reused by the next one; a client holding the old id could then act on a different todo. A persisted sequence (or a database identity column) would fix it.
 - A todo's title and description cannot be edited after creation.
