@@ -1,10 +1,8 @@
-"""Object Mothers: named factories for the test data used across the suite."""
 
 from typing import Any
 
 
 class TodoMother:
-    """Stored todos, as they appear in the JSON file and in API responses."""
 
     @staticmethod
     def pending(id: int = 1, **overrides: Any) -> dict[str, Any]:
@@ -27,16 +25,10 @@ class TodoMother:
 
 
 class TodoPayloadMother:
-    """
-    Request bodies exactly as the frontend sends them (frontend/src/api/todo.ts).
-
-    Keep them in sync with the frontend: if a test fails because of a contract
-    change, the frontend is probably broken too.
-    """
 
     @staticmethod
-    def create(title: str = "New todo") -> dict[str, Any]:
-        return {"title": title, "completed": False}
+    def create(title: str = "New todo", description: str | None = None) -> dict[str, Any]:
+        return {"title": title, "description": description, "completed": False}
 
     @staticmethod
     def toggle(completed: bool = True) -> dict[str, Any]:
