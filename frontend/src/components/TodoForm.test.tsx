@@ -25,6 +25,13 @@ describe("TodoForm", () => {
     expect(addButton).toBeEnabled();
   });
 
+  it("limits the fields to the lengths the backend accepts", () => {
+    const { title, description } = renderForm();
+
+    expect(title).toHaveAttribute("maxlength", "200");
+    expect(description).toHaveAttribute("maxlength", "1000");
+  });
+
   it("sends a trimmed title and null when the description is empty", async () => {
     const { onAdd, title } = renderForm();
 

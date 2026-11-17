@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import type { NewTodo } from "../types/todo";
 
 const TITLE_MAX_LENGTH = 200;
+const DESCRIPTION_MAX_LENGTH = 1000;
 
 const nullIfBlank = (value: string) => value.trim() || null;
 
@@ -55,6 +56,7 @@ export function TodoForm({ onAdd }: TodoFormProps) {
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Description (optional)"
         aria-label="Description"
+        maxLength={DESCRIPTION_MAX_LENGTH}
         rows={2}
         className="px-4 py-2 border border-gray-300 rounded-lg resize-y focus:outline-none focus:ring-2 focus:ring-blue-500"
       />

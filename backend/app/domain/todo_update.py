@@ -2,6 +2,7 @@ from typing import Self
 
 from pydantic import BaseModel, model_validator
 
+from app.domain.description import Description
 from app.domain.title import Title
 
 NON_NULLABLE_FIELDS = ("title", "completed", "favorite")
@@ -9,7 +10,7 @@ NON_NULLABLE_FIELDS = ("title", "completed", "favorite")
 
 class TodoUpdate(BaseModel):
     title: Title | None = None
-    description: str | None = None
+    description: Description = None
     completed: bool | None = None
     favorite: bool | None = None
 

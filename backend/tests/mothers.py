@@ -7,7 +7,7 @@ class TodoMother:
         return {
             "id": id,
             "title": f"Todo {id}",
-            "description": "",
+            "description": None,
             "completed": False,
             "favorite": False,
             **overrides,

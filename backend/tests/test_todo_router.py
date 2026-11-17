@@ -1,5 +1,6 @@
 import pytest
 
+from app.domain.description import DESCRIPTION_MAX_LENGTH
 from app.domain.title import TITLE_MAX_LENGTH
 from tests.conftest import SEED
 from tests.mothers import TodoMother, TodoPayloadMother
@@ -23,7 +24,7 @@ def test_create_todo_as_the_frontend_does(client):
     response = client.post("/todos", json=TodoPayloadMother.create("Learn pytest"))
 
     assert response.status_code == 201
-    assert response.json() == TodoMother.pending(3, title="Learn pytest", description=None)
+    assert response.json() == TodoMother.pending(3, title="Learn pytest")
 
 
 @pytest.mark.parametrize(
@@ -99,3 +100,33 @@ def test_missing_todo_returns_404_on_every_endpoint(client):
     ):
         assert response.status_code == 404
         assert response.json() == {"detail": "Todo 99 not found"}
+
+
+@pytest.mark.parametrize(
+    ("description", "stored"),
+    [
+        ("", None),
+        ("   ", None),
+        ("  Semi-skimmed  ", "Semi-skimmed"),
+        ("x" * DESCRIPTION_MAX_LENGTH, "x" * DESCRIPTION_MAX_LENGTH),
+    ],
+    ids=["empty", "blank", "padded", "max-length"],
+)
+def test_create_normalizes_the_description(client, description, stored):
+    response = client.post("/todos", json=TodoPayloadMother.create(description=description))
+
+    assert response.status_code == 201
+    assert response.json()["description"] == stored
+
+
+def test_create_with_too_long_description_is_rejected(client):
+    body = TodoPayloadMother.create(description="x" * (DESCRIPTION_MAX_LENGTH + 1))
+
+    assert client.post("/todos", json=body).status_code == 422
+
+
+def test_patch_with_blank_description_clears_it(client):
+    response = client.patch("/todos/2", json={"description": "   "})
+
+    assert response.status_code == 200
+    assert response.json()["description"] is None

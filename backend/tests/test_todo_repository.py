@@ -61,7 +61,7 @@ def test_writes_are_persisted_to_file(repository, data_file):
 
     assert [t.model_dump() for t in reloaded.get_all()] == [
         {**SEED[0], "favorite": True},
-        TodoMother.pending(3, title="Persisted", description=None),
+        TodoMother.pending(3, title="Persisted"),
     ]
 
 
