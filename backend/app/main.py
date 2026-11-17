@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -10,6 +11,13 @@ from app.repositories.todoRepository import TodoRepository
 from app.routers import todoRouter
 
 DATA_FILE = Path(__file__).parent / "todos.json"
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get(
+        "CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173"
+    ).split(",")
+    if origin.strip()
+]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -25,10 +33,9 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=CORS_ORIGINS,
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 register_exception_handlers(app)
 app.include_router(todoRouter.router)
