@@ -36,6 +36,9 @@ npm run dev                        # frontend + backend; the venv must be active
 - App: http://localhost:5173 (tasks load automatically, "Load Tasks" refreshes on demand)
 - API docs: http://localhost:8000/docs
 
+
+- Optional environment variables (the defaults need no changes):
+
 | Variable | Default | Used by |
 |---|---|---|
 | `VITE_API_URL` | `http://localhost:8000` | frontend (build time) |
