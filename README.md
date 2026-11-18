@@ -3,10 +3,11 @@
 A todo list manager: FastAPI backend + React (Vite, TypeScript, Tailwind) frontend.
 Tasks can be created with an optional description, completed, marked as favorite and deleted;
 favorites are shown in their own section. Data is persisted in a JSON file.
+All tasks in `INSTRUCTIONS.md` are implemented.
 
 ## Run
 
-### With Docker (recommended)
+### With Docker
 
 ```bash
 docker compose up --build
@@ -50,40 +51,18 @@ cd ../frontend && npm test && npm run lint && npm run build
 
 GitHub Actions runs the same checks on every push and pull request, and builds the Docker images.
 
-## API
-
-| Method | Path | Description |
-|---|---|---|
-| `GET` | `/todos` | List todos |
-| `GET` | `/todos/{id}` | Get a todo (404 if missing) |
-| `POST` | `/todos` | Create a todo (`title` required, `description` optional) → 201 |
-| `PATCH` | `/todos/{id}` | Partial update: only the fields sent change → 200 / 404 / 422 |
-| `DELETE` | `/todos/{id}` | Delete a todo → 204 / 404 |
-
-## What was done
-
-1. **Completion status** persisted through `PATCH /todos/{id}`.
-2. **Delete** endpoint and a delete button on each task.
-3. **Auto-load:** the list is fetched on page load and again after every create, delete or update.
-4. **Descriptions and favorites:** optional description on creation, star toggle, and a "Favorites" section above "All tasks".
-
-Also: validation (non-blank title up to 200 characters, description up to 1000 with blank stored as `null`,
-no `null` for required fields in `PATCH`), visible loading and error states,
-restricted CORS, atomic file writes, Docker setup and CI.
-
 ## Design decisions
 
-- **Repository pattern:** endpoints depend on a `TodoRepository` interface; `JsonTodoRepository` is loaded once in the FastAPI `lifespan`, kept in memory and written to disk on every change. Swapping it for a database does not touch the routers.
-- **Dependency injection by interface:** a generic `provide(Interface)` dependency resolves implementations registered at startup; tests replace them with `dependency_overrides`.
-- **Domain errors mapped in one place:** errors inherit `DomainError` and a single exception handler maps them to HTTP status codes; endpoints declare their errors for the OpenAPI docs.
+- **Repository pattern:** endpoints depend on a `TodoRepository` interface, injected by type through FastAPI `Depends`. `JsonTodoRepository` is loaded once in the `lifespan`, kept in memory and written to disk on every change, so swapping it for a database does not touch the routers, and tests replace it with `dependency_overrides`.
+- **Domain errors mapped in one place:** errors inherit `DomainError` and know nothing about HTTP; a single exception handler maps them to status codes.
 - **Atomic persistence:** the JSON is written to a temp file and swapped with `os.replace`; memory is updated only after a successful write.
-- **Backend as the source of truth:** the frontend refetches the list after every change instead of patching local state. State and API calls live in a `useTodos` hook; components are presentational.
-- **Containers:** nginx serves the frontend and proxies `/api` to the backend, so the browser talks to a single origin (no CORS in containers). Non-root images, multi-stage frontend build.
-- **Tests:** pytest (repository + API, isolated from the real data file, Object Mother for test data) and Vitest + Testing Library (components, API client, app integration).
+- **Backend as the source of truth:** the frontend refetches the list after every change instead of patching local state. Favorites are a filtered view, so they also appear in "All tasks".
+- **Containers:** nginx serves the frontend and proxies `/api` to the backend, so the browser talks to a single origin (no CORS). Non-root images, multi-stage frontend build.
+- **Tests:** pytest for the repository and the API, Vitest + Testing Library for components and the app; test data comes from Object Mothers and never touches the real data file.
 
 ## Known limitations
 
-- Single process only: state is in memory and in one file, so the backend cannot be scaled horizontally (in Kubernetes it would need `replicas: 1`). A database would be the next step.
-- The whole JSON file is rewritten on every change; fine for this size, not for large data sets.
-- New ids are `max(id) + 1`, so deleting the newest todo lets its id be reused by the next one; a client holding the old id could then act on a different todo. A persisted sequence (or a database identity column) would fix it.
-- A todo's title and description cannot be edited after creation.
+- Single process only: state lives in memory and in one file, so the backend cannot scale horizontally (`replicas: 1` in Kubernetes). A database would be the next step.
+- The whole JSON file is rewritten on every change: fine at this size, not for large data sets.
+- Ids are `max(id) + 1`, so the newest id is reused after deleting it; a persisted sequence would fix it.
+- Title and description cannot be edited after creation.
